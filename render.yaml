@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: genunitys-api
+    runtime: node
+    plan: free
+    rootDir: server
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "22"
+      - key: CLIENT_ORIGIN
+        sync: false
+      - key: GOOGLE_SHEET_WEBHOOK_URL
+        sync: false
+      - key: ADMIN_API_KEY
+        generateValue: true
+      - key: LOCAL_CSV_ENABLED
+        value: "false"
+      - key: SEND_CUSTOMER_CONFIRMATION
+        value: "false"
