@@ -70,9 +70,11 @@ router.post('/', submitLimiter, async (req, res, next) => {
     const sheetResult = await appendLeadToSheet(data, req.ip);
     const savedLocally = process.env.NODE_ENV !== 'production' && Boolean(sheetResult.localCsv);
     if (!savedToDatabase && !sheetResult.googleSheet?.synced && !savedLocally) {
+      console.warn('[Lead Storage] No confirmed write:', sheetResult.googleSheet?.reason || 'STORAGE_UNAVAILABLE');
       return res.status(503).json({
         success: false,
         message: 'We could not save your enquiry right now. Please try again shortly.',
+        code: sheetResult.googleSheet?.reason || 'LEAD_STORAGE_UNAVAILABLE',
       });
     }
 

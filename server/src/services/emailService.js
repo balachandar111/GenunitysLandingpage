@@ -19,7 +19,7 @@ export function getTransporter() {
   const isSecure = process.env.SMTP_SECURE === 'true' || port === 465;
 
   return nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'smtp.gmail.com',
+    host: process.env.SMTP_HOST?.trim() || 'smtp.gmail.com',
     port,
     secure: isSecure,
     connectionTimeout: 10000,
