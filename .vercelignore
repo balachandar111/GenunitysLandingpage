@@ -7,6 +7,6 @@ client/dist
 .env.*
 **/.env
 **/.env.*
-server
-api
+server/data
+server/test
 *.zip

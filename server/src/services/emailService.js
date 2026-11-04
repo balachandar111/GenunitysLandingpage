@@ -22,6 +22,9 @@ export function getTransporter() {
     host: process.env.SMTP_HOST || 'smtp.gmail.com',
     port,
     secure: isSecure,
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 15000,
     auth: {
       user,
       pass,

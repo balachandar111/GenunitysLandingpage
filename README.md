@@ -54,15 +54,17 @@ Demo leads can be saved to the following spreadsheet destinations:
      GOOGLE_SHEET_WEBHOOK_URL=https://script.google.com/macros/s/.../exec
      ```
 
-## Production: Vercel + Render
+## Production: Vercel client and API
 
 See [DEPLOYMENT.md](DEPLOYMENT.md) for the complete setup and environment variables.
 
-- Vercel hosts the React client. Set `VITE_API_URL` to the Render service origin.
-- Render runs the Express API using [render.yaml](render.yaml). Set `CLIENT_ORIGIN`
-  to the Vercel origin and configure the Google Sheets webhook or remote MongoDB.
-- Local CSV is a development backup, disabled by default in production. Free
-  Render storage is ephemeral, and free instances cannot use Gmail SMTP ports.
+- Vercel hosts the React client and Express API together. Deploy from the repository
+  root; `/api/*` routes to `api/index.mjs`.
+- Set `VITE_API_URL` to the site's HTTPS origin or leave it empty for same-site requests.
+- Configure Google Sheets and Gmail SMTP in Vercel's server-only environment variables.
+  Email sending finishes before the serverless request returns.
+- Local CSV is a development backup, disabled by default in production.
+- `render.yaml` remains available for optional separate backend hosting.
 - The API confirms a production enquiry only after Google Sheets or MongoDB saves it.
 
 Run `npm test` to check API behavior and `npm run build` to build `client/dist`.

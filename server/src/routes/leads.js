@@ -76,17 +76,17 @@ router.post('/', submitLimiter, async (req, res, next) => {
       });
     }
 
-    // 3. Send details into Gmail using SMTP
-    sendLeadNotification(data, req.ip).catch((emailErr) => {
+    // Finish email delivery before responding so serverless runtimes do not pause it.
+    const notification = sendLeadNotification(data, req.ip).catch((emailErr) => {
       console.error('[Email Service] Failed to send email via SMTP:', emailErr.message);
     });
 
-    // 4. Optional customer confirmation email
-    if (process.env.SEND_CUSTOMER_CONFIRMATION === 'true') {
-      sendCustomerConfirmation(data).catch((confErr) => {
+    const confirmation = process.env.SEND_CUSTOMER_CONFIRMATION === 'true'
+      ? sendCustomerConfirmation(data).catch((confErr) => {
         console.error('[Email Service] Failed to send customer confirmation:', confErr.message);
-      });
-    }
+      })
+      : Promise.resolve();
+    await Promise.all([notification, confirmation]);
 
     res.status(201).json({ success: true, message: 'Enquiry received' });
   } catch (err) {

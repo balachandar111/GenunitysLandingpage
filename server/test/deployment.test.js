@@ -15,6 +15,7 @@ const { default: app } = await import('../src/app.js');
 const { syncToGoogleSheet } = await import('../src/services/sheetService.js');
 const { default: mongoose } = await import('mongoose');
 const { default: Lead } = await import('../src/models/Lead.js');
+const { default: nodemailer } = await import('nodemailer');
 const server = app.listen(0, '127.0.0.1');
 await once(server, 'listening');
 const origin = `http://127.0.0.1:${server.address().port}`;
@@ -117,6 +118,36 @@ test('a spreadsheet edit URL is rejected before any webhook request', async () =
     assert.deepEqual(await syncToGoogleSheet(lead), { synced: false, reason: 'INVALID_GOOGLE_SHEET_WEBHOOK_URL' });
   } finally {
     globalThis.fetch = realFetch;
+    delete process.env.GOOGLE_SHEET_WEBHOOK_URL;
+  }
+});
+
+test('the response waits for SMTP completion on serverless hosting', async () => {
+  const originalCreateTransport = nodemailer.createTransport;
+  let delivered = false;
+  process.env.SMTP_USER = 'test@example.com';
+  process.env.SMTP_PASS = 'test-only-password';
+  process.env.GOOGLE_SHEET_WEBHOOK_URL = 'https://script.google.com/macros/s/test/exec';
+  globalThis.fetch = async () => Response.json({ status: 'success' });
+  nodemailer.createTransport = (options) => {
+    assert.equal(options.connectionTimeout, 10000);
+    return { sendMail: async (message) => {
+      assert.equal(message.to, 'test@example.com');
+      assert.equal(message.replyTo, lead.email);
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      delivered = true;
+      return { messageId: 'test-message' };
+    } };
+  };
+  try {
+    const response = await postLead();
+    assert.equal(response.status, 201);
+    assert.equal(delivered, true);
+  } finally {
+    nodemailer.createTransport = originalCreateTransport;
+    globalThis.fetch = realFetch;
+    delete process.env.SMTP_USER;
+    delete process.env.SMTP_PASS;
     delete process.env.GOOGLE_SHEET_WEBHOOK_URL;
   }
 });
