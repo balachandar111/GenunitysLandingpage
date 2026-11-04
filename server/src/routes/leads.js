@@ -88,9 +88,9 @@ router.post('/', submitLimiter, async (req, res, next) => {
         console.error('[Email Service] Failed to send customer confirmation:', confErr.message);
       })
       : Promise.resolve();
-    await Promise.all([notification, confirmation]);
+    const [notificationResult] = await Promise.all([notification, confirmation]);
 
-    res.status(201).json({ success: true, message: 'Enquiry received' });
+    res.status(201).json({ success: true, message: 'Enquiry received', notificationSent: notificationResult?.success === true });
   } catch (err) {
     next(err);
   }

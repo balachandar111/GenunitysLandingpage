@@ -143,6 +143,7 @@ test('the response waits for SMTP completion on serverless hosting', async () =>
     const response = await postLead();
     assert.equal(response.status, 201);
     assert.equal(delivered, true);
+    assert.equal((await response.json()).notificationSent, true);
   } finally {
     nodemailer.createTransport = originalCreateTransport;
     globalThis.fetch = realFetch;

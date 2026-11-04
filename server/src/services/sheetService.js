@@ -113,11 +113,13 @@ export async function syncToGoogleSheet(lead, ip = '') {
       return { synced: true };
     } else {
       console.warn(`[Sheet Service] Google Sheet webhook responded with status ${res.status}`);
-      return { synced: false, status: res.status };
+      return { synced: false, status: res.status, reason: `GOOGLE_SHEET_HTTP_${res.status}` };
     }
   } catch (err) {
     console.warn(`[Sheet Service] Could not connect to Google Sheet webhook: ${err.message}`);
-    return { synced: false, error: err.message };
+    const reason = err.name === 'TimeoutError' ? 'GOOGLE_SHEET_TIMEOUT'
+      : err instanceof SyntaxError ? 'GOOGLE_SHEET_INVALID_RESPONSE' : 'GOOGLE_SHEET_REQUEST_FAILED';
+    return { synced: false, error: err.message, reason };
   }
 }
 
