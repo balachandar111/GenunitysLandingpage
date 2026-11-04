@@ -57,7 +57,7 @@ export async function sendLeadNotification(lead, ip = '') {
   const timestamp = new Date().toLocaleString('en-US', {
     dateStyle: 'full',
     timeStyle: 'long',
-    timeZone: process.env.TZ || 'Asia/Kolkata',
+    timeZone: process.env.APP_TIMEZONE?.trim() || 'Asia/Kolkata',
   });
 
   const subject = `🎯 New Demo Request: ${lead.fullName} (${lead.company}) - Genunitys`;

@@ -21,6 +21,7 @@ Set these environment variables for Production in the Vercel project:
 | --- | --- |
 | `VITE_API_URL` | `https://genunitys.vercel.app`, or empty for relative same-site requests |
 | `NODE_ENV` | `production` |
+| `APP_TIMEZONE` | Optional IANA timezone; defaults to `Asia/Kolkata` independently of the server's OS timezone |
 | `CLIENT_ORIGIN` | Comma-separated approved frontend origins |
 | `GOOGLE_SHEET_WEBHOOK_URL` | Deployed Apps Script URL ending in `/exec` |
 | `ADMIN_API_KEY` | Private admin access secret |

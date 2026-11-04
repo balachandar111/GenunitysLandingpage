@@ -4,6 +4,9 @@ import { once } from 'node:events';
 
 // No real Sheets, MongoDB, or SMTP traffic in these tests.
 process.env.NODE_ENV = 'production';
+// AWS/Vercel can set this OS timezone value, which Intl does not accept directly.
+process.env.TZ = ':UTC';
+delete process.env.APP_TIMEZONE;
 process.env.CLIENT_ORIGIN = ' https://genunitys.example/ , https://preview.example ';
 process.env.LOCAL_CSV_ENABLED = 'false';
 delete process.env.MONGODB_URI;

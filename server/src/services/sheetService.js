@@ -81,7 +81,7 @@ export async function syncToGoogleSheet(lead, ip = '') {
   }
 
   const payload = {
-    timestamp: new Date().toLocaleString('en-US', { timeZone: process.env.TZ || 'Asia/Kolkata' }),
+    timestamp: new Date().toLocaleString('en-US', { timeZone: process.env.APP_TIMEZONE?.trim() || 'Asia/Kolkata' }),
     fullName: lead.fullName,
     email: lead.email,
     phone: lead.phone,
