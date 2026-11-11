@@ -310,6 +310,7 @@ export const FOOTER = {
     { label: 'Contact', href: '/#contact' },
     { label: 'Privacy Policy', to: '/privacy' },
     { label: 'Terms & Conditions', to: '/terms' },
+    { label: 'Cookie Policy', to: '/cookies' },
   ],
   note: 'Business contact details should be confirmed before publishing.',
 };
