@@ -17,15 +17,22 @@ import useReveal from '../hooks/useReveal.js';
 import { BENEFITS, WHY } from '../data/content.js';
 
 export default function Home() {
-  const { hash } = useLocation();
-  useReveal();
+  const location = useLocation();
+  // Passing location.key guarantees useReveal re-evaluates on any navigation to/from Home
+  useReveal(location.key);
 
-  // Scroll to #section when arriving from another route (e.g. /privacy -> /#contact)
+  // Safe scroll to section when arriving with a hash (e.g. from legal pages)
   useEffect(() => {
-    if (!hash) return;
-    const t = setTimeout(() => document.querySelector(hash)?.scrollIntoView({ behavior: 'smooth' }), 60);
-    return () => clearTimeout(t);
-  }, [hash]);
+    if (!location.hash || location.hash.length <= 1) return;
+    const id = location.hash.replace('#', '');
+    const el = document.getElementById(id);
+    if (el) {
+      const t = setTimeout(() => {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+      return () => clearTimeout(t);
+    }
+  }, [location.hash, location.key]);
 
   return (
     <main>
