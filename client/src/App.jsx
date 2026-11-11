@@ -6,6 +6,7 @@ import Home from './pages/Home.jsx';
 import PrivacyPolicy from './pages/PrivacyPolicy.jsx';
 import TermsConditions from './pages/TermsConditions.jsx';
 import CookiePolicy from './pages/CookiePolicy.jsx';
+import ThankYou from './pages/ThankYou.jsx';
 
 export default function App() {
   return (
@@ -14,6 +15,8 @@ export default function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/thank-you" element={<ThankYou />} />
+        <Route path="/thankyou" element={<ThankYou />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsConditions />} />

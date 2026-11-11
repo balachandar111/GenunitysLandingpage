@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CheckCircle2, Loader2, Lock } from 'lucide-react';
 import { SectionHead } from './ui.jsx';
 import { FORM as C } from '../data/content.js';
@@ -32,6 +33,7 @@ function Field({ name, label, required, error, children }) {
 }
 
 export default function LeadForm() {
+  const navigate = useNavigate();
   const [values, setValues] = useState(EMPTY);
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState('idle'); // idle | sending | done
@@ -54,8 +56,20 @@ export default function LeadForm() {
     setStatus('sending');
     try {
       await submitLead(values);
+      const submitted = { ...values };
       setStatus('done');
       setValues(EMPTY);
+
+      // Navigate to separate dedicated Thank You page with form details
+      navigate('/thank-you', {
+        state: {
+          fullName: submitted.fullName,
+          company: submitted.company,
+          email: submitted.email,
+          requirement: submitted.requirement,
+          industry: submitted.industry,
+        },
+      });
     } catch (err) {
       setStatus('idle');
       const data = err.response?.data;
